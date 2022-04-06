@@ -275,3 +275,45 @@ const mt : string = "hi"
 function 함수113(x? : number){
     
 }
+
+// part2 5강 숙제1
+class User{
+    private static x = 10;
+    public static y = 20;
+    protected z = 30;
+}
+
+User.y = 4
+
+class NewUser extends User {
+    z = 40
+}
+
+
+// part2 5강 숙제2
+class User1{
+    private static x = 10;
+    public static y = 20;
+    static addOne(num : number){
+        User1.x = num
+    }
+}
+
+User1.addOne(3)
+User1.addOne(4)
+
+
+// part2 5강 숙제3
+// class 네모{
+//     private width:number
+//     private height:number
+//     private color:string
+//     constructor(x:number,y:number,color:string){
+//         this.width=x
+//         this.height=y
+//         this.color=color
+//     }
+//     draw(){
+
+//     }
+// }

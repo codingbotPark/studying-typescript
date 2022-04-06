@@ -290,3 +290,126 @@ let {student, age} = {student : true, age : 20}
 함수({student : true, age : 20})
 ```
 
+
+4강
+ts에서는 객체지향언어같은 문법(public private protected static)도 제공한다 = class많이 만들어 개발할 때 유용
+
+```ts
+class User{
+    public name = "kim"
+    constructor(){
+        this.name = "kim"
+    }
+}
+```
+
+class에서 필드를 만드나 constructor를 만드나 결과는 같다, 하지만 class를 만들 때 파라미터를 넣을 수 있다~ 머 이런 차이점
+
+아무튼 위처럼 `public name` 은 모든 자식들이 용가능하게 만든다 = `public`은 항상 부여 되서 의미가 없다
+
+더 중요한건 `private`이다
+
+```ts
+class User{
+    private name = "kim"
+    constructor(){
+        this.name = "kim"
+    }
+}
+```
+
+`private`를 하면 클래스 내에서만 변경할 수 있도록 된다
+이 `private`가 사용되는 예를 보면
+
+```ts
+class User{
+    name : string;
+    familyName : string = 'park'
+    constructor(a){
+        this.name = a + this.familyName
+    }
+}
+let 유저1 = new User('민수')
+```
+
+`public` 키워드를 사용하면 `this`를 생략할 수 있다
+
+```ts
+class Person{
+    constructor(public name){
+
+    }
+}
+let 자식 = new Person('kim')
+console.log(자식)
+```
+이는 객체 생성 때 들어온 값을 바로 public으로 만들어 준다
+
+5강
+class를 복사해서 사용할 수 있다
+`extends`를 붙여서 class를 복사할 수 있다
+
+```ts
+class User{
+    x = 10;
+}
+class NewUser extends User {
+    // 이렇게 하면 User클래스가 복사
+}
+```
+
+protected, private를 붙이면 class{}안에서만 사용이 가능하다,
+protected와 private의 차이점은 확장의 차이점이다
+확장의 예시로는 위에서 나온 `extends`가 있다
+
+```ts
+class User{
+    protected x = 10;
+}
+class NewUser extends User{
+    x = 3
+    // private는 안 된다
+}
+```
+
+결론은 protected는 extends된 class는 사용가능, 자식들은 사용이 불가능 하다
+private는 extends된 class는 사용 불가능, 자식들은 상용이 불가능
+
+static키워드는 부모만 사용할 수 있도록, 자식들이 사용하지 못하게 한다
+
+```ts
+class User{
+    static x = 10;
+    y = 20;
+}
+let 자식 = new User();
+console.log(자식)
+```
+
+이렇게 콘솔을 출력하면 y만 나온다
+x는 User라는 부모에서만 사용할 수 있다
+
+extends하면 static이 따라온다
+
+또 static과 private protected는 같이 사용할 수 있다
+
+static이 붙은 변수는 부모 class만 사용할 수 있기 때문에 아래처럼 `this.변수명` 이 아닌 `클래스명.변수명` 으로 사용한다
+
+```ts
+class User {
+    static skill = 'js'
+    intro = User.skill + "전문가입니다"
+}
+
+let 철수 = new User();
+console.log(철수)
+
+User.skill = "ts"
+// 이 이후의 class의 skill은 ts가 된다
+
+let 철수2 = new User();
+console.log(철수2) 
+```
+
+사실 위와같이 밖에서 변경하는 것은 별로 좋지 않다
+
