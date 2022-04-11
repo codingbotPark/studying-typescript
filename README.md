@@ -264,6 +264,7 @@ interface Student{
 
 
 ## part 2 : 알면 도움은 되는 내용
+1강
 * rest parameter를 사용해 정해지지 않는 인자의 개수만큼 인자를 받을 수 있다
 
 ```ts
@@ -289,7 +290,6 @@ let {student, age} = {student : true, age : 20}
 }
 함수({student : true, age : 20})
 ```
-
 
 4강
 ts에서는 객체지향언어같은 문법(public private protected static)도 제공한다 = class많이 만들어 개발할 때 유용
@@ -412,4 +412,121 @@ console.log(철수2)
 ```
 
 사실 위와같이 밖에서 변경하는 것은 별로 좋지 않다
+
+### 6강
+타입도 import, export를 해서 사용할 수 있다
+
+* 원래 html에서 아래와 같이
+```html
+<script src="파일명.js"></script>
+```
+를 했는데, 이 때 `script`가 많아지면서 전역변수명들이 겹칠 확률이 커졌다
+
+그래서 예전에는 **nameSpace**라는 것을 사용했다
+```ts
+namespace 네임스페이스{
+    export type Name = string | number;
+}
+```
+**namespace안에서 export 해주는거 잊지않기**
+
+이는 하나의 오브젝트로 type을 넣어서 사용할 때 그냥 `Name`이 아닌, `네임스페이스.Name`을 해야 사용할 수 있다
+
+이러한 네임스페이스를 공유할 때는 (import, export가 없었기 때문에) `reference`라는 것을 사용했다
+
+```ts
+///<reference path="파일명.ts">
+
+네임스페이스.Name;
+```
+
+**하지만 지금은 import export만 알면 된다**
+
+export할 수 있는 것은 `type`만이 아닌, `interface`도 할 수 있다
+```ts
+export type 이름 = string;
+export interface 인터페이스{}
+```
+
+참고로 namespace 키워드는 더 예전에는 `module` 을 사용했따
+
+### 7강
+타입을 파라미터로 입력하는 Generic
+
+함수를 만들 때 파라미터를 자유롭게 입력할 수 있는데, 타입도 파라미터로 입력이 가능하다 = generic
+
+#### array를 입력하면 첫 자료 return해주는 함수
+```ts
+function 함수(x:unknown[]){
+    return x[0]
+}
+let a = 함수([4,2])
+```
+이 때 a의 타입은 `함수`를 겨쳐 나왔기 때문에 파라미터 타입인 `unknown`이 된다, 이는 a를 가지고 더 가공하기 힘들어 지기 때문에 `함수`에서 narrowing이나 as를 써서 타입을 추론해줘야 한다
+
+**그래서 두번째 방법은 함수를 사용할 때 타입을 입력을 받을 수 있다 = Generic**
+
+아래처럼 함수를 사용할 때 타입을 입력받아서 함수에서 타입을 부여할 수 있다
+
+```ts
+function 함수<MyType>(x : MyType[]):MyType{
+    return x[0]
+}
+let a = 함수<number>([4,3])
+console.log(a)
+```
+이는 함수의 `MyType` 자리에 `number` 를 입력한 것과 같이 작동한다
+위에서 `MyType`은 `T`로 많이 사용하곤 한다
+
+이 Generic은 확장성이 조금 있어보이고, 매번 다른 타입이 출력 가능하다는 장점이 있다
+
+**참고로 함수를 사용할 때 타입을 지정하지 않아도 타입 추론이 되는데 개발할 때 가독성을 위해 추가하는 것이 좋다**
+
+```ts
+function 함수<MyType>(x : MyType[]):MyType{
+    return x[0]
+}
+let a = 함수([4,3]) // number로 타입추론
+console.log(a)
+```
+
+**주의해야할 점은 generic을 사용할 때 narrowing이 필요한 상황이 있다는 것이다 => 귀찮으면 타입파라미터를 제한둘 수 있다**
+
+```ts
+function 함수<MyType>(x : MyType){
+    return x - 1 // -1을 한다는 것은 어쩌면
+    // number타입이라는 것을 확정하는 것인데
+    // generic은 다른 타입이 들어올 수도 있기 때문에
+    // 에러가 난다
+}
+let a = 함수<number>(100)
+```
+
+**그래서 타입파라미터를 제한하는 방법은**
+`extends` 키워드를 사용할 수 있따
+
+```ts
+function 함수<MyType extends number>(x : MyType){
+    return x - 1
+}
+let a =  함수<number>(100)
+```
+
+요기서 `extends`는 원래 알고있던 "복사"의 개념이 아닌 "체크"라 생각하면 된다
+ts에서 `extends` 를 사용하면 narrowing으로 생각하게 된다
+
+**응용하면 커스텀 타입으로도 타입 파라미터를 제한 가능하다**
+
+```ts
+interface LengthCheck {
+    length : number
+}
+
+function 함수<MyType extends LengthCheck>(x : MyType){
+    return x.length
+}
+let a =  함수<string[]>(['100'])
+```
+
+class만들어 쓸 때도 타입파라미터를 넣을 수 있다
 
