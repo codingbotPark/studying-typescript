@@ -530,3 +530,83 @@ let a =  함수<string[]>(['100'])
 
 class만들어 쓸 때도 타입파라미터를 넣을 수 있다
 
+
+### 8강
+#### ts + react 세팅
+리액트에서 TS사용 방법을 요약해서 알아보면 ts에서 변수, 함수에 타입지정을 하듯, 똑같이 변수, 함수에 타입지정 잘 하면 된다
+
+```
+npx create-react-app 프로젝트명 --template typescript
+```
+를 하면 ts가 세팅 된 리액트 프로젝트가 생성된다
+
+기존 프로젝트에서 ts를 사용하려면
+
+```
+npm install --save typescript @types/node @types/react @types/react-dom @types/jest
+```
+
+근데 그냥 새롭게 만드는게 나음..
+
+#### tsx란?
+tsx라는 파일은 그냥 ts랑 똑같은데 안에 jsx문법이 있다면 .tsx가 된다 
+그러면 jsx = 그냥 안에 있는 html
+
+#### ts in react
+```ts
+import React from "react";
+import './App.css'
+
+let 박스:JSX.Element = <div></div>;
+// 더 자세하게는 IntrinsicElements['태그']를 사용할 수 있다
+// let 박스:JSX.IntrinsicElements['div'] = <div></div>;
+
+function App(){
+    return (
+        <div>
+            <h4>안녕하세요</h4>
+        </div>
+    )
+}
+```
+
+#### component만들 때 타입지정
+```ts
+import React from "react";
+import './App.css'
+
+function Profile():JSX.Element{
+    return (
+        <div>프로필입니다</div>
+    )
+}
+```
+
+이 `Profile` return의 타입인 `JSX.Element` 를 할 수 있다
+
+props타입지정은 object타입으로 해줄 수 있다
+
+```ts
+import React from "react";
+import './App.css'
+
+function Profile(props:{name:string, age:number}):JSX.Element{
+    return (
+        <div>{props.name}</div>
+    )
+}
+```
+
+#### useState타입지정
+실시간 렌더링 되는 변수 = useState
+이 useState에 타입지정은 사실 알아서 해준다
+
+```ts
+const [user, setUser] = useState("kim")
+```
+
+만약 진짜 만약 string와 number가 들어올 수 있는 useState가 있다면 아래와 같이 사용할 수 있다
+
+```ts
+const [user,setUser] = useState<string | number>('kim');
+```

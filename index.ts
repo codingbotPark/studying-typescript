@@ -383,6 +383,7 @@ console.log(a)
 let b = 함수3<string[]>(["hello","hi"])
 console.log(b)
 
+// 코딩애플 코드
 function 함수2<MyType extends string | string[]>(x: MyType)  { 
     console.log(x.length)   
 } 
@@ -390,3 +391,42 @@ function 함수2<MyType extends string | string[]>(x: MyType)  {
 함수2<string>('hello');
 함수2<string[]>(['kim','park'])
 
+ 
+// part2 7강 숙제2
+// interface Animal {
+//   name : string;
+//   age : number 
+// }
+
+// function 함수7강<T extends string>(value:T):Object{
+//   return JSON.parse(value)
+// }
+
+// let data = '{"name" : "dog", "age" : 1 }'
+
+// 함수7강<Animal>(data)
+
+// 코딩애플 코드
+// 상황에 맞는 곳에 제네릭으로 받은 타입을 넣기
+interface Animal {
+  name : string;
+  age : number 
+}
+
+let data = '{"name" : "dog", "age" : 1 }'
+
+function 함수7강1<T>(x:string):T{
+  return JSON.parse(x)
+}
+console.log(함수7강1<Animal>(data))
+
+// part2 7강 숙제2
+class Person1<T> {
+  name;
+  constructor(a:T){
+    this.name = a;
+  }
+}
+let a1 = new Person1<String>('어쩌구');
+a1.name //any 타입이 되었넹 
+console.log(a1.name,typeof(a1.name))
