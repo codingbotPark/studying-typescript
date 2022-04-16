@@ -610,3 +610,158 @@ const [user, setUser] = useState("kim")
 ```ts
 const [user,setUser] = useState<string | number>('kim');
 ```
+
+
+### 8강
+리액트에서 리덕스 사용 이유
+1. 모든 컴포넌트가 state공유
+2. 수정방법을 파일 한 곳에 정의
+
+#### 설치방법
+설치방법은 그냥 redux가 ts를 잘 지원해줘서 그냥 깔아도 된다
+
+```
+npm install redux react-redux
+```
+
+```ts
+const 초기값 : {count : number} = {count: 0};
+
+function reducer(state = 초기값, action:{type : string}): ~~
+```
+
+사실 리액트를 잘 안써봐서 제대로 정리 안했다
+
+### 8강
+array에 붙일 수 있는 tuple type
+
+```ts
+let 멍멍:[string,boolean] = ["dog",true]
+let 멍멍:[string,boolean?] = ["dog",true]
+```
+
+근데 요기서 `?` 를 사용하는 건 맨 마지막에서 시작되어야 한다(들어올 수도 있고 안 들어올 수도 있다)
+
+
+```ts
+function 함수(...x){ // 몇 개의 파라미터가 들어올지 모름 = restParam
+    console.log(x)
+}
+함수(1,2,3,6,3,4) 
+```
+
+```ts
+function 함수10강1(...x:[string,boolean,...(number|string)[]]){
+
+}
+```
+
+spread연산자일 때
+
+```ts
+let arr = [1,2,3];
+let arr2 : [number,number,...number[]] = [4,5,...arr]
+```
+
+
+### 9강
+js 파일을 ts파일로 사용하고 싶을 때 에러가 나오는경우가 있다
+
+```js
+// data.js
+var a = 10;
+var b = {name : 'kim'}
+```
+```ts
+// index.ts
+console.log(a + 1) // 오류가뜸
+```
+
+콘솔에는 제대로 계산이 되지만 a라는 값의 타입이 확정적이지 않기 때문에 오류가 뜬다 그래서 **declare** 를 사용한다
+
+```ts
+// index.ts
+declare let a:number;
+console.log(a+1)
+```
+
+`declare` 는 힌드를 주는 역할을 해서 바뀐 js를 보면 `declare`는 없다
+
+**특히 js로 만든 라이브러리 사요할 때 변수, 함수같은걸 declare로 재정의 한다, 귀찮으면 뒤에 방법이 나온다**
+
+그러면 ts파일을 ts파일로 변수를 가져온다면
+
+```ts
+// data.ts
+export var a = 10;
+```
+```ts
+// index.ts
+import {a} from "./data";
+console.log(a + 1)
+```
+위처럼 사용할 수 있지만 ts의 특징을 활용할 수도 있다
+바로 **모든 ts파일은 ambient moudle(글로벌 모듈) 이 된다**
+
+그래서 ts파일끼리는 `import export` 없이 사용할 수 있다
+
+> 그래서 ts테스트할 때 다른 파일의 ts이 겹쳤었다
+
+**그러면 다 전역변수가 되는데, 귀찮아질 수 있다 ts파일을 로컬 모듈로 만들면 된다**
+로컬모듈로 만드는 방법은 아래처럼 파일 중 **import, export문법이 있으면 자동으로 로컬 모듈로 변한다**
+
+```ts
+export {}
+let a = 10
+// 로컬모듈이 된다
+```
+
+이런 로컬 모듈에서 갑자기 글로벌 변수를 만들고 싶으면 `declare global` 을 사용하면 된다
+
+```ts
+let a = 10;
+declare global{
+    type Dog = string;
+}
+export {}
+```
+
+### 10강
+d.ts 파일 어디다 쓰냐?
+프로젝트에서 쓰는 타입들의 보관용 파일, 그래서 아래와 같이 사용한다
+
+```ts
+// d.ts
+type Age = number;
+interface Person {name : string}
+```
+
+**타입 정의 하는 파일임 그냥, 레퍼런스용으로도 d.ts파일을 사용한다**
+
+`tsconfig.json` 파일에 `declaration : true` 로 하면 파일을 만들고 저장할 때마다 d.ts파일이 생성된다
+
+만약 `index.ts` 에 변수를 만들면 `index.d.ts`에 레퍼런스용으로 파일이 만들어 진다
+
+```ts
+// index.ts
+let 이름 : string= '김'
+```
+
+```ts
+// index.d.ts
+declare let 이름 : string;
+```
+
+그래서 `d.ts` 를 자동생성으로 했을 때는 수정할 필요가 없다
+
+**d.ts파일은 자동으로 글로벌 모듈이 되지 않는다**
+이 때 export하기가 정말 귀찮다면!
+
+`tsconfig.json`에 `typeRoots : ["./types"]` 를 한다면 `./types` 라는 파일에 있는 것들은 글로벌로 해주세요! 가 된다
+
+**위험할 수 있기 때문에 그냥 export 쓰자**
+
+#### 만약 외부 라이브러리 쓸 때 타입정의 안 되어있다면?
+전 강의에도 나왔지만 [Definitly Typed 깃허브 리포지토리](https://github.com/DefinitelyTyped/DefinitelyTyped)에 착한 사람들이 라이브러리에따라 정리해놨다
+
+귀찮으니 [ts공홈에서 검색](https://www.typescriptlang.org/dt/search?search=)하자

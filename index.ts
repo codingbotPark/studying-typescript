@@ -430,3 +430,30 @@ class Person1<T> {
 let a1 = new Person1<String>('어쩌구');
 a1.name //any 타입이 되었넹 
 console.log(a1.name,typeof(a1.name))
+
+
+// part2 10강 숙제1
+const food:[string,number,boolean] = ["뿌셔뿌셔",600,true]
+
+// part2 10강 숙제2
+let arr:[string,number,...boolean[]] = ['동서녹차', 4000, true, false, true, true, false, true]
+
+// part2 10강 숙제3
+function 함수10강1(...x:[string,boolean,...(number|string)[]]){
+
+}
+
+// part2 10강 숙제4
+function 함수10강2(...x:(string|number)[]){
+  let stringArr:string[] = []
+  let numberArr:number[] = []
+  x.forEach(function(i){
+    if (typeof(i) === "string"){
+      stringArr.push(i)
+    } else {
+      numberArr.push(i)
+    }
+  })
+  console.log(stringArr)
+  console.log(numberArr)
+}
