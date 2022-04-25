@@ -632,7 +632,7 @@ function reducer(state = 초기값, action:{type : string}): ~~
 
 사실 리액트를 잘 안써봐서 제대로 정리 안했다
 
-### 8강
+### 11강
 array에 붙일 수 있는 tuple type
 
 ```ts
@@ -664,7 +664,7 @@ let arr2 : [number,number,...number[]] = [4,5,...arr]
 ```
 
 
-### 9강
+### 12강
 js 파일을 ts파일로 사용하고 싶을 때 에러가 나오는경우가 있다
 
 ```js
@@ -726,7 +726,7 @@ declare global{
 export {}
 ```
 
-### 10강
+### 13강
 d.ts 파일 어디다 쓰냐?
 프로젝트에서 쓰는 타입들의 보관용 파일, 그래서 아래와 같이 사용한다
 
@@ -765,3 +765,131 @@ declare let 이름 : string;
 전 강의에도 나왔지만 [Definitly Typed 깃허브 리포지토리](https://github.com/DefinitelyTyped/DefinitelyTyped)에 착한 사람들이 라이브러리에따라 정리해놨다
 
 귀찮으니 [ts공홈에서 검색](https://www.typescriptlang.org/dt/search?search=)하자
+
+### 14강
+interface를 object 타입 지정할 때 사용한다고 배웠다,
+한 가지 용도가 더 있는데, class타입을 확인하고 싶을 때도 interface문법을 사용할 수 있다, 정확히는 implement키워드가 필요하다
+
+```ts
+class Car{
+    model : string;
+    price : number = 1000;
+    constructor (a : string){
+        this.model = a
+    }
+}
+let 붕붕이 = new Car('morning');
+```
+
+위와같은 클래스가 있을 때, `class Car`로부터 생산되는 object들은 model과 price속성을 가지게 된다
+
+**이 때 class가 model, price의 속성을 가지고 있는지 타입으로 확인하고 싶다면? interface + implements**
+
+```ts
+interface Cartype {
+    model : string,
+    price : number
+}
+
+class Car implements CarType{
+    model : string;
+    price : number = 1000;
+    constructor(a : string){
+        this.model = a
+    }
+}
+let 붕붕이 = new Car('morning')
+```
+
+위와같이 `implements` 를 사용하면 class에 `interface`의 타입이 모두 있는지 확인하고 빠진게 있으면 에러를 뱉는다
+
+중요한 것은 **implement타입은 interface에 들어있는 속성을 가지고 있는지 확인하는 것이지, class에 타입을 할당하고 변형시키는 키워드는 아니다**
+
+```ts
+interface CarType {
+  model : string,
+  tax : (price :number) => number;
+}
+
+class Car implements CarType {
+  model;   ///any 타입됨
+  tax (a){   ///a 파라미터는 any 타입됨 
+    return a * 0.1
+  }
+}
+```
+
+```
+지금 CarType을 implements 했냐고 써봤습니다.
+
+근데 CarType에 있던 model : string 이런게 반영되는건 아닙니다. class 안에서의 model은 any 타입임
+
+class 함수도 마찬가지로 함수에 있던 number 타입이 전혀 반영되지 않습니다. 
+
+결론은 implements는 class의 타입을 체크하는 용도지 할당하는게 아님을 명심합시다. 
+```
+
+### 15강
+**index signature를 사용하면 object타입지정 한번에 가능하다**
+
+```ts
+interface StringOnly{
+    name : string,
+    age : string,
+    location : string,
+}
+
+let user: StringOnly = {
+    name : "kim",
+    age : "20",
+    location : "Daegu",
+}
+```
+
+이처럼 모두 string이라는 타입을 사용할 때
+아래처럼 index signature을 써서 object타입지정을 한 번에 가능하다
+
+```ts
+interface StringOnly{
+    [key : string] : string,
+    // number또는 string
+    // [key : string] : string | number,
+}
+
+let user: StringOnly = {
+    name : "kim",
+    age : "20",
+    location : "Daegu",
+}
+```
+
+아래와 같은 오브젝트 안 오브젝트 자료 타입 지정은?
+
+```ts
+// interface myType{
+//     "font-size" : {
+//         "font-size" : {
+//             "font-size" : 14
+//         }
+//     }  
+// }
+
+interface myType{
+    "font-size" : MyType | number
+}
+
+let css = {
+    "font-size" : {
+        "font-size" : {
+            "font-size" : 14
+        }
+    }
+}
+```
+
+위처럼 **recursive한 타입**만든다면, object안 `font-size`와 그 안의 `font-size`를 한 번에 타입 지정이 가능해 진다
+
+**아무튼 이러한 object index signature 를 사용하면 유연한 타입지정은 가능하지만 업격하게 버그를 잡아주는 기능은 약화될 수 있다**
+
+### 16강
+

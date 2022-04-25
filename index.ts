@@ -457,3 +457,33 @@ function 함수10강2(...x:(string|number)[]){
   console.log(stringArr)
   console.log(numberArr)
 }
+
+// part2 15강 숙제 1
+interface objType {
+  [key : string] : string | number
+}
+
+let obj = {
+  model : 'k5',
+  brand : 'kia',
+  price : 6000,
+  year : 2030,
+  date : '6월',
+  percent : '5%',
+  dealer : '김차장',
+}
+
+// part2 15강 숙제 2
+interface obj1Type{
+  [key : string] : obj1Type | number
+}
+
+let obj1 = {
+  'font-size' : 10,
+  'secondary' : {
+    'font-size' : 12,
+    'third' : {
+      'font-size' : 14
+    }
+  }
+}
