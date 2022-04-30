@@ -323,3 +323,23 @@ function 함수10강2() {
     console.log(stringArr);
     console.log(numberArr);
 }
+var obj = {
+    model: 'k5',
+    brand: 'kia',
+    price: 6000,
+    year: 2030,
+    date: '6월',
+    percent: '5%',
+    dealer: '김차장',
+};
+var obj1 = {
+    'font-size': 10,
+    'secondary': {
+        'font-size': 12,
+        'third': {
+            'font-size': 14
+        }
+    }
+};
+var age1;
+var age2;

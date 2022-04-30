@@ -892,4 +892,106 @@ let css = {
 **아무튼 이러한 object index signature 를 사용하면 유연한 타입지정은 가능하지만 업격하게 버그를 잡아주는 기능은 약화될 수 있다**
 
 ### 16강
+타입을 프로그래밍 스럽게(예를들면 조건식) 만들 수도 있다
+또는 **mapping을 사용해서 타입을 한 번에 바꿀 수 있다**
 
+그 전에 keyof를 알아보면
+
+```ts
+let obj = {name : 'kim', age : 20}
+Object.keys(obj)
+// 'name' 'age'
+```
+이처럼 `keyof`는 obj의 key값만 가져온다
+
+이와 유사한 기능을 ts에서 제공하는데
+
+```ts
+interface Person{
+    age : number,
+    name : string,
+}
+
+keyof Person // 이렇게 하면 'age' | 'name' 이 남는다
+```
+
+그래서 위를 활용해서 아래와 같이 사용할 수 있다
+
+```ts
+interface Person{
+    age : number,
+    name : string,
+}
+
+type PErsonKeys = keyof Person;
+let a : personKeys = 'age'// age또는 name
+```
+
+이를 활용하면 아래처럼 잘 못된 타입을 지정했을 때
+전부 string으로 바꾸려면 mapping을 하라 수 있다
+
+```ts
+type Car = {
+    color : boolean,
+    model : boolean,
+    price : boolean | number
+}
+
+type TypeChange<MyType> = {
+    [key in keyof MyType] : string
+    // 오른쪽에 있는 자료들을 다 뽑아서 유니온으로 만들어라, 'color' | 'model' | 'price'
+    /// 그래서 왼쪽에 있는 key값이 오른쪽에 있는 유니온 타입에 있으면, string타입으로 바꿔라 가 된다
+}
+
+type 새로운타입 = TypeChanger<Car>
+// Car의 모든 속성이 타입이 string이 된다
+```
+
+## 17강
+타입을 조건문으로 부여할 수도 있다
+
+아래는 삼항 연산자를 활용한 타입조건식이다
+
+```ts
+type Age<T> = T;
+let a:Age<string>
+```
+
+이 제네릭 문법을 사용해서 타입 파라미터가 string이면 string을 남기고, 그게 아니면 unknown을 남긴다 할 때
+
+```ts
+type Age<T> = T extends string ? string : unknown; 
+// 비교할 때는 extends를 활용
+let a:Age<string>
+let b:Age<boolean>
+```
+
+infer 키워드
+```ts
+type Person<T> = T extends infer R ? string : unknown
+// 이는 항상 참이다 
+```
+infer은 타입을 왼쪽에서 추출하는 역할을 한다
+
+```ts
+type 타입추출<T> = T extends (infer R)[] ? R : unknown
+// infer로 타입을 추출할 때 왼쪽, 오른쪽을 비교해서 같은 모습으로 만들어 준다
+// 그래서 string[] 이 들어오고, (infer R)[] 에 따라서 R은 그냥 string이 들어간다
+type a = 타입추출<string[]>
+```
+
+즉 string array타입이 들어오면 string이 남는다
+이를 조금 더 활요하면
+
+```ts
+type 타입추출<T> = T extends (() => infer R) ? R : unknown
+type a = 타입추출 <() => void>
+// R 은 void가 들어가게 된다
+```
+
+하지만 이처럼 **함수의 리턴 타입만 뽑고시다면 `ReturnType` 이라는 기본 함수를 사용하면 된다**
+
+```ts
+type b = ReturnType<() => void>
+// b = void
+```

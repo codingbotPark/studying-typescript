@@ -487,3 +487,20 @@ let obj1 = {
     }
   }
 }
+
+// 17강 퀴즈
+// 조건문으로 파라미터가 array이면 array첫 자료의 타입을 남기기
+// array아니면 any타입 남기기
+// type FirstrItem<T> = T extends [] ? [0] : any
+type FirstrItem<T> = T extends any[] ? T[0] : any
+
+// 17강 숙제1
+// array타입을 입력하면, array의 첫 자료가 string이면 string을 남기고,
+// array의 첫 자료가 string이 아니면 unknown을 남기기
+type TaskType1<T> = T extends [string,...any] ? T[0] : unknown
+let age1 : TaskType1<[string,number]>;
+let age2 : TaskType1<[boolean,number]>
+
+// 17강 숙제2
+type 타입뽑기<T> = T extends (x: infer R) => any ? R : any
+type a = 타입뽑기<(x : number) => void>
